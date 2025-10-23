@@ -39,7 +39,7 @@ jobs:
           echo "IMAGE_TAG=${GITHUB_SHA::7}" >> $GITHUB_ENV
 
       - name: Build Docker image
-        run: docker build --build-arg NEXT_PUBLIC_API_BASE_URL=http://job-hunter-api/api/v1/job-hunter -t $REGISTRY/${{ secrets.DOCKER_IMAGE }}:$IMAGE_TAG .
+        run: docker build --build-arg NEXT_PUBLIC_API_BASE_URL=http://job.thecodemerge.com/api/v1/job-hunter -t $REGISTRY/${{ secrets.DOCKER_IMAGE }}:$IMAGE_TAG .
 
       - name: Push Docker image
         run: docker push $REGISTRY/${{ secrets.DOCKER_IMAGE }}:$IMAGE_TAG
