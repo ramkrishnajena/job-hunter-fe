@@ -1,0 +1,56 @@
+name: Deploy Job Hunter FE to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # allows manual trigger
+
+jobs:
+  deploy:
+    name: Build
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY: docker.io
+      IMAGE_NAME: ${{ secrets.DOCKER_IMAGE }}
+      IMAGE_TAG: latest
+      K8S_DEPLOYMENT: ./k8s/deployment.yaml
+      K8S_SERVICE: ./k8s/service.yaml
+
+    steps:
+      # 🧹 Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ⚙️ Setup Node.js for build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # 📦 Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # 🏗️ Build Next.js app
+      - name: Build frontend
+        run: npm run build
+
+      # 🐳 Login to Docker Hub
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 🏗️ Build Docker image
+      - name: Build Docker image
+        run: docker build -t $REGISTRY/${{ secrets.DOCKER_IMAGE }}:$IMAGE_TAG .
+
+      # 🚀 Push image to Docker Hub
+      - name: Push Docker image
+        run: docker push $REGISTRY/${{ secrets.DOCKER_IMAGE }}:$IMAGE_TAG
+
+
+
