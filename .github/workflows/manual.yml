@@ -11,13 +11,6 @@ jobs:
     name: Build
     runs-on: ubuntu-latest
 
-    env:
-      REGISTRY: docker.io
-      IMAGE_NAME: ${{ secrets.DOCKER_IMAGE }}
-      IMAGE_TAG: latest
-      K8S_DEPLOYMENT: ./k8s/deployment.yaml
-      K8S_SERVICE: ./k8s/service.yaml
-
     steps:
       # 🧹 Checkout code
       - name: Checkout repository
